@@ -10,7 +10,19 @@ module.exports = {
       current: 'currentColor',
       transparent: 'transparent',
       white: '#ffffff',
-      primary: colors.stone,
+      black: '#12372e',
+      primary: {
+        50: '#F4F4F4',    // Lightest
+        100: '#F4F4F4',   // Lighter
+        200: '#a7d4c2',   // Light
+        300: '#82c2a7',   // Medium light
+        400: '#56a986',   // Neutral light
+        500: '#2b8f65',   // Base
+        600: '#184c3c',   // Slightly darker
+        700: '#1c6447',   // Darker
+        800: '#184c3c',   // Second darkest
+        900: '#12372e',   // Darkest
+      },
     },
     fontFamily: {
       sans: ['Inter', 'sans-serif'],
