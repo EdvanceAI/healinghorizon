@@ -1,0 +1,95 @@
+---
+// HelenWidget.astro
+---
+
+<div id="helen-widget" class="fixed bottom-4 right-4 z-50">
+  <button
+    id="helen-button"
+    class="flex items-center gap-2 bg-primary-600 text-white px-4 py-3 rounded-lg shadow-lg hover:bg-primary-700 transition-all duration-300"
+  >
+    <span class="font-medium">Chat with Helen AI!</span>
+  </button>
+
+  <div
+    id="helen-expanded"
+    class="hidden bg-primary-100 rounded-lg shadow-xl w-80 transition-all duration-300"
+  >
+    <div class="flex items-center justify-between bg-primary-600 text-white p-4 rounded-t-lg">
+      <h3 class="font-medium">Chat with Helen AI!</h3>
+      <button
+        id="close-helen"
+        class="text-white hover:text-primary-200 transition-colors"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <div class="p-4">
+      <p class="text-primary-800 mb-4">
+        Would you like to chat about anything? I'm here to listen and support you.
+      </p>
+      <a
+        href="/helenai"
+        class="block w-full bg-primary-600 text-white text-center py-2 px-4 rounded-lg hover:bg-primary-700 transition-colors"
+      >
+        Start Chatting
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Get DOM elements
+  const widget = document.getElementById('helen-widget');
+  const button = document.getElementById('helen-button');
+  const expanded = document.getElementById('helen-expanded');
+  const closeButton = document.getElementById('close-helen');
+
+  if (widget && button && expanded && closeButton) {
+    // Handle initial button click
+    button.addEventListener('click', () => {
+      button.style.display = 'none';
+      expanded.style.display = 'block';
+      // Add animation class
+      expanded.classList.add('animate-fade-in');
+    });
+
+    // Handle close button click
+    closeButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      expanded.style.display = 'none';
+      button.style.display = 'flex';
+      // Add animation class
+      button.classList.add('animate-fade-in');
+    });
+  }
+</script>
+
+<style>
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.3s ease-out forwards;
+  }
+</style>
