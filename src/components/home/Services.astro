@@ -1,22 +1,25 @@
 ---
 const services = [
   {
-    step: '01',
-    name: 'Design',
+    name: 'Instagram Blog',
     description:
-      'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.',
+      'We post about mental health and wellness to our 750+ followers, providing support and guidance on self-care and building confidence!',
+    button: "@the.healing.horizon",
+    link: "https://www.instagram.com/the.healing.horizon/"
   },
   {
-    step: '02',
-    name: 'Develop',
+    name: 'Google Workspace Community',
     description:
-      'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.',
+      'Join our caring and welcoming community to seek support on anything or just have a fun time!',
+    button: "Join us",
+    link: "https://teams.live.com/l/community/FEAkB9WJQ_Iu9dyCwI"
   },
   {
-    step: '03',
-    name: 'Maintain',
+    name: 'Helen AI',
     description:
-      'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.',
+      'Try our custom-built AI companion that you can vent to about whatever your facing and get personalized advice!',
+    button: "Chat now",
+    link: "/helenai"
   },
 ];
 ---
@@ -24,22 +27,38 @@ const services = [
 <section class="py-16 sm:py-20">
   <div class="mx-auto max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
     <div class="flex flex-col gap-12 sm:gap-16">
-      <h2 class="text-3xl font-medium tracking-tight sm:text-4xl">Services</h2>
+      <h2 class="text-3xl font-medium tracking-tight sm:text-4xl text-primary-900">
+        <strong>What we do</strong>
+      </h2>
       <div class="grid gap-8 lg:grid-cols-3">
-        {
-          services.map((service) => (
-            <div class="bg-primary-500/10 dark:bg-primary-400/10 flex flex-col gap-12 rounded-3xl px-6 py-8">
-              <p class="text-sm">{service.step}</p>
-              <div class="flex flex-col gap-4">
-                <h3 class="text-xl font-medium">{service.name}</h3>
-                <p class="text-primary-950/70 dark:text-primary-200/70 text-base sm:text-lg">
-                  {service.description}
-                </p>
-              </div>
+        {services.map((service, index) => (
+          <div
+            key={index}
+            class="bg-primary-500/10 dark:bg-primary-400/10 flex flex-col gap-6 rounded-3xl p-8 hover:shadow-lg transition-shadow"
+          >
+            <div class="flex flex-col gap-4">
+              <h3 class="text-xl font-medium text-primary-900 dark:text-primary-200">
+                {service.name}
+              </h3>
+              <p class="text-primary-950/70 dark:text-primary-200/70 text-base sm:text-lg">
+                {service.description}
+              </p>
             </div>
-          ))
-        }
+            <div class="mt-auto">
+              <a
+                href={service.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="bg-primary-900 text-white font-medium py-2 px-4 rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-primary-100 dark:focus:ring-offset-primary-900 transition"
+              >
+                {service.button}
+              </a>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   </div>
 </section>
+
+

@@ -1,0 +1,266 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// Add your Gemini API key here
+const GEMINI_API_KEY = 'AIzaSyBXNgdETjqwP4uoYjF9uiBITTxW-i-2Tl0';
+---
+
+<Layout
+  description="Chat with Helen, a supportive AI companion for mental wellness conversations."
+  title="Helen AI | Mental Health Support"
+>
+  <main class="min-h-screen">
+    <section class="py-12 sm:py-16">
+      <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          <div class="col-span-12 lg:col-span-9">
+            <div class="flex flex-col items-center gap-4 sm:gap-6 text-center mb-12">
+              <h1 class="text-4xl font-medium tracking-tight sm:text-5xl lg:text-6xl text-primary-600 dark:text-primary-300">
+                Helen AI
+              </h1>
+              <p class="text-primary-700 dark:text-primary-200 mx-auto max-w-xl text-lg sm:text-xl">
+                A space for sharing and supporting mental health journeys.
+              </p>
+            </div>
+
+            <div class="">
+              <div class="absolute inset-0 z-0 opacity-10 pointer-events-none">
+                <div class="absolute bottom-12 left-5 w-64 h-64 bg-primary-200 rounded-full mix-blend-multiply filter blur-xl animate-blob-2"></div>
+              </div>
+              <div class="h-[450px] overflow-y-auto p-6" id="chat-messages">
+                <div class="space-y-8">
+                  <div class="flex gap-4">
+                    <div class="flex-shrink-0">
+                      <div class="h-10 w-10 rounded-full bg-gradient-to-br from-primary-300 to-primary-400 flex items-center justify-center shadow-md">
+                        <span class="text-white text-lg font-medium">H</span>
+                      </div>
+                    </div>
+                    <div class="flex flex-col gap-1 max-w-[80%]">
+                      <div class="text-sm font-medium text-primary-800 dark:text-primary-200">Helen</div>
+                      <div class="bg-primary-100 dark:bg-primary-700 rounded-2xl p-4 text-primary-800 dark:text-primary-200">
+                        Hello! I'm Helen, and I'm here to listen and chat with you about whatever's on your mind. How can I support you today?
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="border-t border-primary-200 p-4">
+                <form id="chat-form" class="flex gap-4">
+                  <input
+                    type="text"
+                    id="message-input"
+                    placeholder="Type your message here..."
+                    class="flex-1 min-w-10 rounded-xl border-100 bg-primary-100 px-4 py-3 text-primary-800 dark:text-primary-200 placeholder-primary-400 focus:ring-0 focus:ring-primary-300"
+                  />
+                  <button
+                    type="submit"
+                    class="rounded-xl bg-gradient-to-r from-primary-300 to-primary-300 px-6 py-3 text-white hover:opacity-90 transition-opacity focus:ring-2 focus:ring-primary-500 shadow-md"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+                    </svg>
+                  </button>
+                </form>
+
+                <!-- Sample Prompts -->
+                <div class="flex justify-center gap-4 mt-6">
+                  <button class="sample-prompt border-2 text-primary-700 border-primary-200 rounded-lg px-4 py-2 text-sm hover:bg-primary-200 transition-colors">
+                    How can I manage anxiety?
+                  </button>
+                  <button class="sample-prompt border-2 text-primary-700 border-primary-200 rounded-lg px-4 py-2 text-sm hover:bg-primary-200 transition-colors">
+                    Tips for better sleep?
+                  </button>
+                  <button class="sample-prompt border-2 text-primary-700 border-primary-200 rounded-lg px-4 py-2 text-sm hover:bg-primary-200 transition-colors">
+                    Dealing with stress at school
+                  </button>
+                </div>
+
+                <div class="mt-8 text-center text-sm text-primary-600 dark:text-primary-400">
+                  Helen AI is not a replacement for professional mental health support.
+                  <br />For medical advice, please consult qualified healthcare providers.
+                </div>
+              </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+<script>
+  const GEMINI_API_KEY = 'AIzaSyBXNgdETjqwP4uoYjF9uiBITTxW-i-2Tl0';
+  const chatForm = document.getElementById('chat-form');
+  const chatMessages = document.getElementById('chat-messages');
+  const messageInput = document.getElementById('message-input');
+  const samplePrompts = document.querySelectorAll('.sample-prompt');
+
+  function formatText(text) {
+    // Handle bold text with both ** and __ markers
+    text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    text = text.replace(/__(.*?)__/g, '<strong>$1</strong>');
+
+    // Handle paragraphs
+    text = text.split('\n\n').map(para => `<p>${para}</p>`).join('');
+
+    // Handle single line breaks
+    text = text.replace(/\n/g, '<br>');
+
+    // Handle bullet points
+    text = text.replace(/^\s*[-*]\s(.+)$/gm, '<li>$1</li>');
+    text = text.replace(/(<li>.*?<\/li>)/gs, '<ul>$1</ul>');
+
+    return text;
+  }
+
+  // Loading indicator component
+  function createLoadingIndicator() {
+    const loadingDiv = document.createElement('div');
+    loadingDiv.className = 'flex gap-4';
+    loadingDiv.innerHTML = `
+      <div class="flex-shrink-0">
+        <div class="h-10 w-10 rounded-full bg-gradient-to-br from-primary-300 to-primary-400 flex items-center justify-center shadow-md">
+          <span class="text-white text-lg font-medium">H</span>
+        </div>
+      </div>
+      <div class="flex flex-col gap-1 max-w-[80%]">
+        <div class="text-sm font-medium text-primary-800 dark:text-primary-200">Helen</div>
+        <div class="bg-primary-100 dark:bg-primary-700 rounded-2xl p-4 text-primary-800 dark:text-primary-200">
+          <div class="flex items-center gap-1">
+            <div class="w-2 h-2 bg-primary-400 rounded-full animate-bounce" style="animation-delay: 0s;"></div>
+            <div class="w-2 h-2 bg-primary-400 rounded-full animate-bounce" style="animation-delay: 0.2s;"></div>
+            <div class="w-2 h-2 bg-primary-400 rounded-full animate-bounce" style="animation-delay: 0.4s;"></div>
+          </div>
+        </div>
+      </div>
+    `;
+    return loadingDiv;
+  }
+
+  function addMessage(content, type) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `flex gap-4 ${type === 'user' ? 'justify-end' : ''}`;
+
+    let html = '';
+
+    if (type === 'assistant') {
+      html = `
+        <div class="flex-shrink-0">
+          <div class="h-10 w-10 rounded-full bg-gradient-to-br from-primary-300 to-primary-400 flex items-center justify-center shadow-md">
+            <span class="text-white text-lg font-medium">H</span>
+          </div>
+        </div>
+        <div class="flex flex-col gap-1 max-w-[80%]">
+          <div class="text-sm font-medium text-primary-800 dark:text-primary-200">Helen</div>
+          <div class="bg-primary-100 dark:bg-primary-700 rounded-2xl p-4 text-primary-800 dark:text-primary-200 space-y-2">
+            ${formatText(content)}
+          </div>
+        </div>
+      `;
+    } else {
+      html = `
+        <div class="flex flex-col gap-1 max-w-[80%]">
+          <div class="text-sm font-medium text-primary-800 dark:text-primary-200 text-right">You</div>
+          <div class="rounded-2xl p-4 text-primary-800 dark:text-primary-200">
+            ${formatText(content)}
+          </div>
+        </div>
+      `;
+    }
+
+    messageDiv.innerHTML = html;
+    chatMessages.appendChild(messageDiv);
+
+    const spacingDiv = document.createElement('div');
+    spacingDiv.className = 'h-8';
+    chatMessages.appendChild(spacingDiv);
+
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+chatForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const message = messageInput.value.trim();
+
+    if (message) {
+      addMessage(message, 'user');
+      messageInput.value = '';
+
+      // Add loading indicator
+      const loadingIndicator = createLoadingIndicator();
+      chatMessages.appendChild(loadingIndicator);
+      const loadingSpacingDiv = document.createElement('div');
+      loadingSpacingDiv.className = 'h-8';
+      chatMessages.appendChild(loadingSpacingDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+
+      try {
+        const requestBody = {
+          contents: [{
+            parts: [{
+              text: `You are Helen, a friendly and casual AI chatbot. Respond in a warm, conversational way as if chatting with a friend. Use casual language, emojis where appropriate, and show genuine interest. Be empathetic but keep things light and natural. Avoid being too formal or clinical. Include some gentle humor when appropriate. Keep responses fairly concise and conversational.
+
+Example style:
+"Hey! That sounds tough 😔 I totally get why you'd feel that way. You know what might help..."
+"Omg yes, sleep can be so tricky! 😴 I've heard lots of people say that..."
+"That's awesome! 🎉 I'm so glad things are going well for you..."
+
+Current message to respond to: ${message}`
+            }]
+          }]
+        };
+
+        console.log('Sending request:', requestBody);
+
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestBody)
+        });
+
+        const responseText = await response.text();
+        console.log('Raw response:', responseText);
+
+        // Remove loading indicator
+        loadingIndicator.remove();
+        loadingSpacingDiv.remove();
+
+        if (!response.ok) {
+          throw new Error(`API call failed with status ${response.status}: ${responseText}`);
+        }
+
+        const data = JSON.parse(responseText);
+        console.log('Parsed response:', data);
+
+        if (data && data.candidates && data.candidates[0] && data.candidates[0].content) {
+          const generatedText = data.candidates[0].content.parts[0].text;
+          console.log('Generated text:', generatedText);
+          addMessage(generatedText, 'assistant');
+        } else {
+          console.error('Unexpected API response structure:', data);
+          addMessage("Oops! 😅 Something went wrong on my end. Mind trying again?", 'assistant');
+        }
+      } catch (error) {
+        // Remove loading indicator in case of error
+        loadingIndicator.remove();
+        loadingSpacingDiv.remove();
+
+        console.error('Detailed error:', error);
+        addMessage("Hey! 😕 I'm having some technical difficulties right now. Could you try again in a moment?", 'assistant');
+      }
+    }
+  });
+
+  samplePrompts.forEach(button => {
+    button.addEventListener('click', () => {
+      if (messageInput) {
+        const promptText = button.textContent.trim();
+        messageInput.value = promptText;
+        chatForm.dispatchEvent(new Event('submit', { cancelable: true }));
+      }
+    });
+  });
+</script>
+
+
+</Layout>
