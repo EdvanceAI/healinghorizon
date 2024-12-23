@@ -1,0 +1,57 @@
+---
+const posts = [
+  {
+    description: '🌟🌷',
+    image: "/assets/post1.PNG",
+    date: "December 12",
+    link: "https://www.instagram.com/p/DDe-_1oT3eS/",
+  },
+  {
+    description: '🎀',
+    image: "/assets/post2.PNG",
+    date: "December 11",
+    link: "https://www.instagram.com/p/DDbbjZuzRPn/",
+  },
+  {
+    description: 'I am honestly begging you to cry 🌟💪',
+    image: "/assets/post3.PNG",
+    date: "December 9",
+    link: "https://www.instagram.com/p/DDW3Q2szYBz/",
+  },
+];
+---
+
+<section id="instagram-posts" class="mt-2 py-16 sm:py-20">
+  <div class="mx-auto max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
+    <div class="flex flex-col gap-12 sm:gap-16">
+      <h2 class="text-3xl font-medium tracking-tight sm:text-4xl text-primary-900">
+        <strong>Recent Posts</strong>
+      </h2>
+
+      <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        {posts.map((post) => (
+          <a
+            href={post.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group relative overflow-hidden rounded-xl bg-neutral-100 transition-all duration-300 hover:shadow-lg"
+          >
+            <div class="aspect-square w-full">
+              <img
+                src={post.image}
+                alt={post.description}
+                class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+            </div>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+              <div class="absolute bottom-0 p-4 text-white">
+                <p class="mb-2 line-clamp-2">{post.description}</p>
+                <p class="text-sm opacity-80">{post.date}</p>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
