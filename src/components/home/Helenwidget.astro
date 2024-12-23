@@ -51,30 +51,64 @@
 </div>
 
 <script>
-  // Get DOM elements
-  const widget = document.getElementById('helen-widget');
-  const button = document.getElementById('helen-button');
-  const expanded = document.getElementById('helen-expanded');
-  const closeButton = document.getElementById('close-helen');
+  // Function to initialize widget functionality
+  function initializeWidget() {
+    // Get DOM elements
+    const widget = document.getElementById('helen-widget');
+    const button = document.getElementById('helen-button');
+    const expanded = document.getElementById('helen-expanded');
+    const closeButton = document.getElementById('close-helen');
 
-  if (widget && button && expanded && closeButton) {
-    // Handle initial button click
-    button.addEventListener('click', () => {
+    if (widget && button && expanded && closeButton) {
+      // Remove existing event listeners if any
+      button.removeEventListener('click', handleButtonClick);
+      closeButton.removeEventListener('click', handleCloseClick);
+
+      // Handle initial button click
+      button.addEventListener('click', handleButtonClick);
+
+      // Handle close button click
+      closeButton.addEventListener('click', handleCloseClick);
+    }
+  }
+
+  // Button click handler
+  function handleButtonClick() {
+    const button = document.getElementById('helen-button');
+    const expanded = document.getElementById('helen-expanded');
+
+    if (button && expanded) {
       button.style.display = 'none';
       expanded.style.display = 'block';
+      // Remove existing animation class if present
+      expanded.classList.remove('animate-fade-in');
+      // Force a reflow
+      void expanded.offsetWidth;
       // Add animation class
       expanded.classList.add('animate-fade-in');
-    });
+    }
+  }
 
-    // Handle close button click
-    closeButton.addEventListener('click', (e) => {
-      e.preventDefault();
+  // Close button click handler
+  function handleCloseClick(e) {
+    e.preventDefault();
+    const button = document.getElementById('helen-button');
+    const expanded = document.getElementById('helen-expanded');
+
+    if (button && expanded) {
       expanded.style.display = 'none';
       button.style.display = 'flex';
+      // Remove existing animation class if present
+      button.classList.remove('animate-fade-in');
+      // Force a reflow
+      void button.offsetWidth;
       // Add animation class
       button.classList.add('animate-fade-in');
-    });
+    }
   }
+
+  // Initialize on page load
+  document.addEventListener('astro:page-load', initializeWidget);
 </script>
 
 <style>

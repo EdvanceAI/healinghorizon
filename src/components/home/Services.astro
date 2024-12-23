@@ -34,13 +34,13 @@ const services = [
         {services.map((service, index) => (
           <div
             key={index}
-            class="bg-primary-500/10 dark:bg-primary-400/10 flex flex-col gap-6 rounded-3xl p-8 hover:shadow-lg transition-shadow"
+            class="bg-primary-500/10 flex flex-col gap-6 rounded-3xl p-8 hover:shadow-lg transition-shadow"
           >
             <div class="flex flex-col gap-4">
-              <h3 class="text-xl font-medium text-primary-900 dark:text-primary-200">
+              <h3 class="text-xl font-medium text-primary-900">
                 {service.name}
               </h3>
-              <p class="text-primary-950/70 dark:text-primary-200/70 text-base sm:text-lg">
+              <p class="text-primary-950/70 text-base sm:text-lg">
                 {service.description}
               </p>
             </div>
@@ -49,7 +49,7 @@ const services = [
                 href={service.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="bg-primary-900 text-white font-medium py-2 px-4 rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-primary-100 dark:focus:ring-offset-primary-900 transition"
+                class="bg-primary-900 text-white font-medium py-2 px-4 rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-primary-100 transition"
               >
                 {service.button}
               </a>

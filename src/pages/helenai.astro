@@ -14,10 +14,10 @@ const GEMINI_API_KEY = 'AIzaSyBXNgdETjqwP4uoYjF9uiBITTxW-i-2Tl0';
       <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <div class="col-span-12 lg:col-span-9">
             <div class="flex flex-col items-center gap-4 sm:gap-6 text-center mb-12">
-              <h1 class="text-4xl font-medium tracking-tight sm:text-5xl lg:text-6xl text-primary-600 dark:text-primary-300">
+              <h1 class="text-4xl font-medium tracking-tight sm:text-5xl lg:text-6xl text-primary-600">
                 Helen AI
               </h1>
-              <p class="text-primary-700 dark:text-primary-200 mx-auto max-w-xl text-lg sm:text-xl">
+              <p class="text-primary-700 mx-auto max-w-xl text-lg sm:text-xl">
                 A space for sharing and supporting mental health journeys.
               </p>
             </div>
@@ -35,8 +35,8 @@ const GEMINI_API_KEY = 'AIzaSyBXNgdETjqwP4uoYjF9uiBITTxW-i-2Tl0';
                       </div>
                     </div>
                     <div class="flex flex-col gap-1 max-w-[80%]">
-                      <div class="text-sm font-medium text-primary-800 dark:text-primary-200">Helen</div>
-                      <div class="bg-primary-100 dark:bg-primary-700 rounded-2xl p-4 text-primary-800 dark:text-primary-200">
+                      <div class="text-sm font-medium text-primary-800">Helen</div>
+                      <div class="bg-primary-100 rounded-2xl p-4 text-primary-800">
                         Hello! I'm Helen, and I'm here to listen and chat with you about whatever's on your mind. How can I support you today?
                       </div>
                     </div>
@@ -50,7 +50,7 @@ const GEMINI_API_KEY = 'AIzaSyBXNgdETjqwP4uoYjF9uiBITTxW-i-2Tl0';
                     type="text"
                     id="message-input"
                     placeholder="Type your message here..."
-                    class="flex-1 min-w-10 rounded-xl border-100 bg-primary-100 px-4 py-3 text-primary-800 dark:text-primary-200 placeholder-primary-400 focus:ring-0 focus:ring-primary-300"
+                    class="flex-1 min-w-10 rounded-xl border-100 bg-primary-100 px-4 py-3 text-primary-800 placeholder-primary-400 focus:ring-0 focus:ring-primary-300"
                   />
                   <button
                     type="submit"
@@ -75,7 +75,7 @@ const GEMINI_API_KEY = 'AIzaSyBXNgdETjqwP4uoYjF9uiBITTxW-i-2Tl0';
                   </button>
                 </div>
 
-                <div class="mt-8 text-center text-sm text-primary-600 dark:text-primary-400">
+                <div class="mt-8 text-center text-sm text-primary-600">
                   Helen AI is not a replacement for professional mental health support.
                   <br />For medical advice, please consult qualified healthcare providers.
                 </div>
@@ -87,7 +87,10 @@ const GEMINI_API_KEY = 'AIzaSyBXNgdETjqwP4uoYjF9uiBITTxW-i-2Tl0';
   </main>
 
 <script>
-    const GEMINI_API_KEY = 'AIzaSyBXNgdETjqwP4uoYjF9uiBITTxW-i-2Tl0';
+  const GEMINI_API_KEY = 'AIzaSyBXNgdETjqwP4uoYjF9uiBITTxW-i-2Tl0';
+
+  // Function to initialize chat functionality
+  function initializeChat() {
     const chatForm = document.getElementById('chat-form');
     const chatMessages = document.getElementById('chat-messages');
     const messageInput = document.getElementById('message-input');
@@ -96,47 +99,55 @@ const GEMINI_API_KEY = 'AIzaSyBXNgdETjqwP4uoYjF9uiBITTxW-i-2Tl0';
     // Store conversation history as an array of messages with roles
     let conversationHistory = [];
 
-  function formatText(text) {
-    // Handle bold text with both ** and __ markers
-    text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-    text = text.replace(/__(.*?)__/g, '<strong>$1</strong>');
+    // Initial system prompt - only sent once at the start
+    conversationHistory.push({
+      role: 'system',
+      content: `You are Helen, a friendly but professional AI companion. Respond in a warm, conversational but helpful and professional way as if chatting with an acquaintance. Use casual language and appropriate emojis (very occasionally), and show genuine interest while remaining professional. Be empathetic but keep things light and natural. Avoid being too formal or clinical. Keep responses fairly concise and conversational.
+                If the user becomes too personal or specific in their messages, provide generic advice, suggest they seek adult and professional help, and provide resources. DO NOT respond after. Again, if they even mention self-harm or suicide, provide resources and DO NOT respond after.
+                DO NOT under any circumstances provide any advice that supports any form of self-harm or violence.`
+    });
 
-    // Handle paragraphs
-    text = text.split('\n\n').map(para => `<p>${para}</p>`).join('');
+    function formatText(text) {
+      // Handle bold text with both ** and __ markers
+      text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      text = text.replace(/__(.*?)__/g, '<strong>$1</strong>');
 
-    // Handle single line breaks
-    text = text.replace(/\n/g, '<br>');
+      // Handle paragraphs
+      text = text.split('\n\n').map(para => `<p>${para}</p>`).join('');
 
-    // Handle bullet points
-    text = text.replace(/^\s*[-*]\s(.+)$/gm, '<li>$1</li>');
-    text = text.replace(/(<li>.*?<\/li>)/gs, '<ul>$1</ul>');
+      // Handle single line breaks
+      text = text.replace(/\n/g, '<br>');
 
-    return text;
-  }
+      // Handle bullet points
+      text = text.replace(/^\s*[-*]\s(.+)$/gm, '<li>$1</li>');
+      text = text.replace(/(<li>.*?<\/li>)/gs, '<ul>$1</ul>');
 
-  // Loading indicator component
-  function createLoadingIndicator() {
-    const loadingDiv = document.createElement('div');
-    loadingDiv.className = 'flex gap-4';
-    loadingDiv.innerHTML = `
-      <div class="flex-shrink-0">
-        <div class="h-10 w-10 rounded-full bg-gradient-to-br from-primary-300 to-primary-400 flex items-center justify-center shadow-md">
-          <span class="text-white text-lg font-medium">H</span>
-        </div>
-      </div>
-      <div class="flex flex-col gap-1 max-w-[80%]">
-        <div class="text-sm font-medium text-primary-800 dark:text-primary-200">Helen</div>
-        <div class="bg-primary-100 dark:bg-primary-700 rounded-2xl p-4 text-primary-800 dark:text-primary-200">
-          <div class="flex items-center gap-1">
-            <div class="w-2 h-2 bg-primary-400 rounded-full animate-bounce" style="animation-delay: 0s;"></div>
-            <div class="w-2 h-2 bg-primary-400 rounded-full animate-bounce" style="animation-delay: 0.2s;"></div>
-            <div class="w-2 h-2 bg-primary-400 rounded-full animate-bounce" style="animation-delay: 0.4s;"></div>
+      return text;
+    }
+
+    // Loading indicator component
+    function createLoadingIndicator() {
+      const loadingDiv = document.createElement('div');
+      loadingDiv.className = 'flex gap-4';
+      loadingDiv.innerHTML = `
+        <div class="flex-shrink-0">
+          <div class="h-10 w-10 rounded-full bg-gradient-to-br from-primary-300 to-primary-400 flex items-center justify-center shadow-md">
+            <span class="text-white text-lg font-medium">H</span>
           </div>
         </div>
-      </div>
-    `;
-    return loadingDiv;
-  }
+        <div class="flex flex-col gap-1 max-w-[80%]">
+          <div class="text-sm font-medium text-primary-800 ">Helen</div>
+          <div class="bg-primary-100 rounded-2xl p-4 text-primary-800">
+            <div class="flex items-center gap-1">
+              <div class="w-2 h-2 bg-primary-400 rounded-full animate-bounce" style="animation-delay: 0s;"></div>
+              <div class="w-2 h-2 bg-primary-400 rounded-full animate-bounce" style="animation-delay: 0.2s;"></div>
+              <div class="w-2 h-2 bg-primary-400 rounded-full animate-bounce" style="animation-delay: 0.4s;"></div>
+            </div>
+          </div>
+        </div>
+      `;
+      return loadingDiv;
+    }
 
     function addMessage(content, type) {
       // Add message to UI
@@ -153,8 +164,8 @@ const GEMINI_API_KEY = 'AIzaSyBXNgdETjqwP4uoYjF9uiBITTxW-i-2Tl0';
             </div>
           </div>
           <div class="flex flex-col gap-1 max-w-[80%]">
-            <div class="text-sm font-medium text-primary-800 dark:text-primary-200">Helen</div>
-            <div class="bg-primary-100 dark:bg-primary-700 rounded-2xl p-4 text-primary-800 dark:text-primary-200 space-y-2">
+            <div class="text-sm font-medium text-primary-800">Helen</div>
+            <div class="bg-primary-100 rounded-2xl p-4 text-primary-800 space-y-2">
               ${formatText(content)}
             </div>
           </div>
@@ -162,8 +173,8 @@ const GEMINI_API_KEY = 'AIzaSyBXNgdETjqwP4uoYjF9uiBITTxW-i-2Tl0';
       } else {
         html = `
           <div class="flex flex-col gap-1 max-w-[80%]">
-            <div class="text-sm font-medium text-primary-800 dark:text-primary-200 text-right">You</div>
-            <div class="rounded-2xl p-4 text-primary-800 dark:text-primary-200">
+            <div class="text-sm font-medium text-primary-800 text-right">You</div>
+            <div class="rounded-2xl p-4 text-primary-800">
               ${formatText(content)}
             </div>
           </div>
@@ -179,15 +190,17 @@ const GEMINI_API_KEY = 'AIzaSyBXNgdETjqwP4uoYjF9uiBITTxW-i-2Tl0';
 
       chatMessages.scrollTop = chatMessages.scrollHeight;
 
-      // Add message to conversation history
-      conversationHistory.push({
-        role: type === 'user' ? 'user' : 'assistant',
-        content: content
-      });
+      // Add message to conversation history (skip if it's the system message)
+      if (type !== 'system') {
+        conversationHistory.push({
+          role: type === 'user' ? 'user' : 'assistant',
+          content: content
+        });
+      }
     }
 
-    chatForm?.addEventListener('submit', async (e) => {
-      e.preventDefault();
+    async function handleSubmit(e) {
+      if (e) e.preventDefault();
       const message = messageInput.value.trim();
 
       if (message) {
@@ -195,27 +208,24 @@ const GEMINI_API_KEY = 'AIzaSyBXNgdETjqwP4uoYjF9uiBITTxW-i-2Tl0';
         messageInput.value = '';
 
         const loadingIndicator = createLoadingIndicator();
-        chatMessages.appendChild(loadingIndicator);
         const loadingSpacingDiv = document.createElement('div');
         loadingSpacingDiv.className = 'h-8';
+
+        chatMessages.appendChild(loadingIndicator);
         chatMessages.appendChild(loadingSpacingDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
 
         try {
-          // Format conversation history for the API
+          // Format conversation history for the API, excluding the system message
           const conversationContext = conversationHistory
+            .filter(msg => msg.role !== 'system')
             .map(msg => `${msg.role}: ${msg.content}`)
             .join('\n\n');
 
           const requestBody = {
             contents: [{
               parts: [{
-                text: `You are Helen, a friendly and casual AI chatbot. Respond in a warm, conversational way as if chatting with a friend. Use casual language, emojis where appropriate, and show genuine interest. Be empathetic but keep things light and natural. Avoid being too formal or clinical. Include some gentle humor when appropriate. Keep responses fairly concise and conversational.
-
-    Previous conversation:
-    ${conversationContext}
-
-    Current message to respond to: ${message}`
+                text: `${conversationHistory[0].content}\n\nPrevious conversation:\n${conversationContext}\n\nCurrent message to respond to: ${message}`
               }]
             }]
           };
@@ -233,6 +243,7 @@ const GEMINI_API_KEY = 'AIzaSyBXNgdETjqwP4uoYjF9uiBITTxW-i-2Tl0';
           const responseText = await response.text();
           console.log('Raw response:', responseText);
 
+          // Remove loading indicators
           loadingIndicator.remove();
           loadingSpacingDiv.remove();
 
@@ -243,7 +254,7 @@ const GEMINI_API_KEY = 'AIzaSyBXNgdETjqwP4uoYjF9uiBITTxW-i-2Tl0';
           const data = JSON.parse(responseText);
           console.log('Parsed response:', data);
 
-          if (data && data.candidates && data.candidates[0] && data.candidates[0].content) {
+          if (data?.candidates?.[0]?.content?.parts?.[0]?.text) {
             const generatedText = data.candidates[0].content.parts[0].text;
             console.log('Generated text:', generatedText);
             addMessage(generatedText, 'assistant');
@@ -252,6 +263,7 @@ const GEMINI_API_KEY = 'AIzaSyBXNgdETjqwP4uoYjF9uiBITTxW-i-2Tl0';
             addMessage("Oops! 😅 Something went wrong on my end. Mind trying again?", 'assistant');
           }
         } catch (error) {
+          // Remove loading indicators
           loadingIndicator.remove();
           loadingSpacingDiv.remove();
 
@@ -259,19 +271,32 @@ const GEMINI_API_KEY = 'AIzaSyBXNgdETjqwP4uoYjF9uiBITTxW-i-2Tl0';
           addMessage("Hey! 😕 I'm having some technical difficulties right now. Could you try again in a moment?", 'assistant');
         }
       }
-    });
+    }
 
-    samplePrompts.forEach(button => {
-      button.addEventListener('click', () => {
-        if (messageInput) {
-          const promptText = button.textContent.trim();
-          messageInput.value = promptText;
-          chatForm.dispatchEvent(new Event('submit', { cancelable: true }));
-        }
+    // Event Listeners
+    if (chatForm) {
+      chatForm.removeEventListener('submit', handleSubmit);
+      chatForm.addEventListener('submit', handleSubmit);
+    }
+
+    if (samplePrompts) {
+      samplePrompts.forEach(button => {
+        button.removeEventListener('click', handleSamplePrompt);
+        button.addEventListener('click', handleSamplePrompt);
       });
-    });
+    }
 
+    function handleSamplePrompt() {
+      if (messageInput) {
+        const promptText = this.textContent.trim();
+        messageInput.value = promptText;
+        chatForm.dispatchEvent(new Event('submit', { cancelable: true }));
+      }
+    }
+  }
 
+  // Initialize on page load
+  document.addEventListener('astro:page-load', initializeChat);
 </script>
 
 
